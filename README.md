@@ -129,7 +129,7 @@ All preprocessing functions, equations, neural architectures, evaluation routine
 
 A historical observation can be represented as:
 
-$$
+```math
 o_t =
 \left(
 i,
@@ -145,7 +145,7 @@ R_i,
 W,
 k_c
 \right)
-$$
+```
 
 where:
 
@@ -166,7 +166,7 @@ where:
 
 The objective is to learn a predictive function:
 
-$$
+```math
 \hat{\psi}_z =
 f\left(
 i,
@@ -181,16 +181,16 @@ R_i,
 W,
 k_c
 \right)
-$$
+```
 
 The optimal function can be represented as:
 
-$$
+```math
 \hat{f}
 =
-\operatorname*{arg\,min}_{f \in \mathcal{H}}
+\underset{f \in \mathcal{H}}{\mathrm{arg\,min}}
 \Delta(f)
-$$
+```
 
 where $\mathcal{H}$ is the set of candidate predictive models and $\Delta$ is the selected loss function.
 
@@ -242,28 +242,28 @@ The notebook fits the imputer and scalers using only the training data from each
 
 Each feature is transformed into the interval $[0,1]$:
 
-$$
-X_{\text{scaled}}
+```math
+X_{\mathrm{scaled}}
 =
 \frac{
-X_{\text{original}}-\min(X_{\text{train}})
+X_{\mathrm{original}}-\min(X_{\mathrm{train}})
 }{
-\max(X_{\text{train}})-\min(X_{\text{train}})
+\max(X_{\mathrm{train}})-\min(X_{\mathrm{train}})
 }
-$$
+```
 
 The inverse transformation is:
 
-$$
-X_{\text{original}}
+```math
+X_{\mathrm{original}}
 =
-X_{\text{scaled}}
+X_{\mathrm{scaled}}
 \left[
-\max(X_{\text{train}})-\min(X_{\text{train}})
+\max(X_{\mathrm{train}})-\min(X_{\mathrm{train}})
 \right]
 +
-\min(X_{\text{train}})
-$$
+\min(X_{\mathrm{train}})
+```
 
 #### KNN Imputation
 
@@ -271,7 +271,7 @@ Missing values are estimated using neighboring observations.
 
 The Euclidean distance between observations $\mathbf{x}$ and $\mathbf{y}$ is:
 
-$$
+```math
 d(\mathbf{x},\mathbf{y})
 =
 \sqrt{
@@ -280,7 +280,7 @@ d(\mathbf{x},\mathbf{y})
 x_j-y_j
 \right)^2
 }
-$$
+```
 
 Only the available features shared by the compared observations are considered during neighborhood construction.
 
@@ -294,9 +294,9 @@ Three model families are studied.
 
 The dense model uses fully connected layers and a Gaussian activation function:
 
-$$
+```math
 \phi(x)=e^{-x^2}
-$$
+```
 
 This model provides a non-recurrent baseline for comparison with the sequence-oriented architectures.
 
@@ -306,7 +306,7 @@ The LSTM architecture is designed to model dependencies between input variables 
 
 The input gate is:
 
-$$
+```math
 \mathbf{i}_t
 =
 \sigma
@@ -317,11 +317,11 @@ U_i\mathbf{h}_{t-1}
 +
 \mathbf{b}_i
 \right)
-$$
+```
 
 The forget gate is:
 
-$$
+```math
 \mathbf{f}_t
 =
 \sigma
@@ -332,11 +332,11 @@ U_f\mathbf{h}_{t-1}
 +
 \mathbf{b}_f
 \right)
-$$
+```
 
 The output gate is:
 
-$$
+```math
 \mathbf{o}_t
 =
 \sigma
@@ -347,11 +347,11 @@ U_o\mathbf{h}_{t-1}
 +
 \mathbf{b}_o
 \right)
-$$
+```
 
 The candidate cell state is:
 
-$$
+```math
 \tilde{\mathbf{c}}_t
 =
 \tanh
@@ -362,11 +362,11 @@ U_c\mathbf{h}_{t-1}
 +
 \mathbf{b}_c
 \right)
-$$
+```
 
 The cell state is updated by:
 
-$$
+```math
 \mathbf{c}_t
 =
 \mathbf{f}_t
@@ -376,11 +376,11 @@ $$
 \mathbf{i}_t
 \odot
 \tilde{\mathbf{c}}_t
-$$
+```
 
 The hidden state is:
 
-$$
+```math
 \mathbf{h}_t
 =
 \mathbf{o}_t
@@ -389,42 +389,42 @@ $$
 \left(
 \mathbf{c}_t
 \right)
-$$
+```
 
 #### Bidirectional LSTM
 
 BiLSTM processes the input in forward and backward directions:
 
-$$
+```math
 \overrightarrow{\mathbf{h}}_t
 =
-\operatorname{LSTM}_{f}
+\mathrm{LSTM}_{f}
 \left(
 \mathbf{x}_t,
 \overrightarrow{\mathbf{h}}_{t-1}
 \right)
-$$
+```
 
-$$
+```math
 \overleftarrow{\mathbf{h}}_t
 =
-\operatorname{LSTM}_{b}
+\mathrm{LSTM}_{b}
 \left(
 \mathbf{x}_t,
 \overleftarrow{\mathbf{h}}_{t+1}
 \right)
-$$
+```
 
 The two representations are combined as:
 
-$$
+```math
 \mathbf{h}_t^{\mathrm{bi}}
 =
 \left[
 \overrightarrow{\mathbf{h}}_t;
 \overleftarrow{\mathbf{h}}_t
 \right]
-$$
+```
 
 ---
 
@@ -434,13 +434,13 @@ After comparing the candidate models, the selected architecture can be used to e
 
 The predicted value can support irrigation management:
 
-$$
+```math
 \hat{\psi}_z
 \longrightarrow
-\text{soil moisture estimation}
+\mathrm{soil\ moisture\ estimation}
 \longrightarrow
-\text{Irrigation Water Need}
-$$
+\mathrm{Irrigation\ Water\ Need}
+```
 
 ---
 
@@ -448,26 +448,26 @@ $$
 
 The main prediction metric is the Mean Absolute Error:
 
-$$
-\operatorname{MAE}
+```math
+\mathrm{MAE}
 =
 \frac{1}{n}
 \sum_{i=1}^{n}
 \left|
 y_i-\hat{y}_i
 \right|
-$$
+```
 
 Because the target is normalized during training, the notebook converts the error back to the original scale:
 
-$$
-\operatorname{MAE}_{\text{original}}
+```math
+\mathrm{MAE}_{\mathrm{original}}
 =
 \left[
 \max(Y)-\min(Y)
 \right]
-\operatorname{MAE}_{\text{scaled}}
-$$
+\mathrm{MAE}_{\mathrm{scaled}}
+```
 
 The final error is reported in **kilopascals**, or kPa.
 
