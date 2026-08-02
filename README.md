@@ -188,8 +188,7 @@ The optimal function can be represented as:
 $$
 \hat{f}
 =
-\underset{f \in \mathcal{H}}{\operatorname{argmin}}
-\;
+\operatorname*{arg\,min}_{f \in \mathcal{H}}
 \Delta(f)
 $$
 
@@ -277,7 +276,9 @@ d(\mathbf{x},\mathbf{y})
 =
 \sqrt{
 \sum_{j=1}^{p}
-(x_j-y_j)^2
+\left(
+x_j-y_j
+\right)^2
 }
 $$
 
@@ -303,56 +304,91 @@ This model provides a non-recurrent baseline for comparison with the sequence-or
 
 The LSTM architecture is designed to model dependencies between input variables and historical observations.
 
-The main LSTM equations are:
+The input gate is:
 
 $$
-f_t
+\mathbf{i}_t
 =
 \sigma
 \left(
-W_f[h_{t-1},x_t]+b_f
+W_i\mathbf{x}_t
++
+U_i\mathbf{h}_{t-1}
++
+\mathbf{b}_i
 \right)
 $$
 
+The forget gate is:
+
 $$
-i_t
+\mathbf{f}_t
 =
 \sigma
 \left(
-W_i[h_{t-1},x_t]+b_i
+W_f\mathbf{x}_t
++
+U_f\mathbf{h}_{t-1}
++
+\mathbf{b}_f
 \right)
 $$
 
+The output gate is:
+
 $$
-\tilde{C}_t
+\mathbf{o}_t
+=
+\sigma
+\left(
+W_o\mathbf{x}_t
++
+U_o\mathbf{h}_{t-1}
++
+\mathbf{b}_o
+\right)
+$$
+
+The candidate cell state is:
+
+$$
+\tilde{\mathbf{c}}_t
 =
 \tanh
 \left(
-W_C[h_{t-1},x_t]+b_C
-\right)
-$$
-
-$$
-C_t
-=
-f_t \odot C_{t-1}
+W_c\mathbf{x}_t
 +
-i_t \odot \tilde{C}_t
-$$
-
-$$
-o_t
-=
-\sigma
-\left(
-W_o[h_{t-1},x_t]+b_o
+U_c\mathbf{h}_{t-1}
++
+\mathbf{b}_c
 \right)
 $$
 
+The cell state is updated by:
+
 $$
-h_t
+\mathbf{c}_t
 =
-o_t \odot \tanh(C_t)
+\mathbf{f}_t
+\odot
+\mathbf{c}_{t-1}
++
+\mathbf{i}_t
+\odot
+\tilde{\mathbf{c}}_t
+$$
+
+The hidden state is:
+
+$$
+\mathbf{h}_t
+=
+\mathbf{o}_t
+\odot
+\tanh
+\left(
+\mathbf{c}_t
+\right)
 $$
 
 #### Bidirectional LSTM
@@ -360,31 +396,33 @@ $$
 BiLSTM processes the input in forward and backward directions:
 
 $$
-\overrightarrow{h_t}
+\overrightarrow{\mathbf{h}}_t
 =
 \operatorname{LSTM}_{f}
 \left(
-x_t,\overrightarrow{h}_{t-1}
+\mathbf{x}_t,
+\overrightarrow{\mathbf{h}}_{t-1}
 \right)
 $$
 
 $$
-\overleftarrow{h_t}
+\overleftarrow{\mathbf{h}}_t
 =
 \operatorname{LSTM}_{b}
 \left(
-x_t,\overleftarrow{h}_{t+1}
+\mathbf{x}_t,
+\overleftarrow{\mathbf{h}}_{t+1}
 \right)
 $$
 
 The two representations are combined as:
 
 $$
-h_t
+\mathbf{h}_t^{\mathrm{bi}}
 =
 \left[
-\overrightarrow{h_t};
-\overleftarrow{h_t}
+\overrightarrow{\mathbf{h}}_t;
+\overleftarrow{\mathbf{h}}_t
 \right]
 $$
 
@@ -411,7 +449,7 @@ $$
 The main prediction metric is the Mean Absolute Error:
 
 $$
-MAE
+\operatorname{MAE}
 =
 \frac{1}{n}
 \sum_{i=1}^{n}
@@ -423,12 +461,12 @@ $$
 Because the target is normalized during training, the notebook converts the error back to the original scale:
 
 $$
-MAE_{\text{original}}
+\operatorname{MAE}_{\text{original}}
 =
 \left[
 \max(Y)-\min(Y)
 \right]
-MAE_{\text{scaled}}
+\operatorname{MAE}_{\text{scaled}}
 $$
 
 The final error is reported in **kilopascals**, or kPa.
@@ -570,7 +608,7 @@ T1-15
 T1-45
 T1-75
 W1
-kc
+Kc
 T_min
 T_max
 RH_min
